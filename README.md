@@ -1,1 +1,1 @@
-# CSCIE192-2024-Spring
+# Code for CSCIE192 Harvard Extension class
