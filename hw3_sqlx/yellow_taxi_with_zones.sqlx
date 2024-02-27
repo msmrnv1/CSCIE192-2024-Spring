@@ -1,0 +1,52 @@
+config {
+    type: "table",
+    columns: {
+        taxi_type: "type of taxi - yellow or green",
+        pickup_time: "pickup time",
+        dropoff_time: "dropoff time",
+        do_location_id: "dropoff location ID",
+        do_borough: "dropoff borough name - can be empty if ID did not have any borough mapping",
+        pu_location_id: "pickup location ID",
+        pu_borough: "pickup borough name - can be empty if ID did not have any borough mapping",
+        fare_amount: "fare amount",
+        trip_distance: "trip distance",
+        trip_duration_minutes: " trip duration in minutes",
+        passenger_count: "passenger count",
+        ratecode_id: "ratecode_id",
+        total_amount: "total amount paid for the ride",
+        tip_amount: "tip amount"
+    }
+}
+
+  -- Config blocks allow you to configure, document, and test your data assets.
+  -- The rest of a SQLX file contains your SELECT statement used to create the table.
+SELECT
+  "yellow" AS taxi_type,
+  DATETIME(tpep_pickup_datetime) AS pickup_time,
+  DATETIME(tpep_dropoff_datetime) AS dropoff_time,
+  dolocationid AS do_location_id,
+  ARRAY(
+  SELECT
+    zones.borough
+  FROM
+    `s3_green_taxi.taxi-zones` AS zones
+  WHERE
+    zones.LocationID = dolocationid) AS do_borough,
+  pulocationid AS pu_location_id,
+  ARRAY(
+  SELECT
+    zones.borough
+  FROM
+    `s3_green_taxi.taxi-zones` AS zones
+  WHERE
+    zones.LocationID = pulocationid) AS pu_borough,
+  trip_distance,
+  DATETIME_DIFF(tpep_dropoff_datetime, tpep_pickup_datetime, MINUTE) AS trip_duration_minutes,
+  passenger_count,
+  fare_amount,
+  ratecodeid as ratecode_id,
+  total_amount,
+  tip_amount
+FROM
+  `cscie192-022024.gs_yellow_taxi.yellow_taxi`
+LIMIT 1000
