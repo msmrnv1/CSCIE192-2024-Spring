@@ -1,0 +1,22 @@
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
+build/
+bin/
+tools/*.gz
+tools/*/*
+.gradle/
+.classpath
+.project
+.settings
+.idea
+*.iml
+*.ipr
+*.iws
+.DS_Store
+*/venv
+*/output
+*.pyc
+
